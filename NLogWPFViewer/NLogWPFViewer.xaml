@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="NLogWPFViewer.NLogWPFViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="230" d:DesignWidth="450"
+             >
+    <Grid>
+        <DataGrid x:Name="dg" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VirtualizingStackPanel.VirtualizationMode="Recycling" FontFamily="Letter Gothic" Background="Gainsboro">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}" >
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Level, Mode=OneTime}" Value="Trace">
+                            <Setter Property="Background" Value="WhiteSmoke"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level, Mode=OneTime}" Value="Debug">
+                            <Setter Property="Background" Value="LightGray"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level, Mode=OneTime}" Value="Info">
+                            <Setter Property="Background" Value="White"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level, Mode=OneTime}" Value="Warn">
+                            <Setter Property="Background" Value="Orange"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level, Mode=OneTime}" Value="Error">
+                            <Setter Property="Background" Value="Firebrick"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Level, Mode=OneTime}" Value="Fatal">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="" Binding="{Binding TimeStamp,StringFormat=HH:mm:ss.fff, Mode=OneTime}" Width="80"/>
+                <DataGridTextColumn Header="" Binding="{Binding Level, Mode=OneTime}" Width="50"/>
+                <DataGridTextColumn Header="" Binding="{Binding FormattedMessage, Mode=OneTime}" Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip" Value="{Binding Tooltip, Mode=OneWay}" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="" Binding="{Binding Exception.Message, Mode=OneTime}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
