@@ -61,4 +61,25 @@ Other useful things:
 
 `bool AutoScroll` - gets/sets if the grid auto-scrolls to the newest line.
 
+`dg` - data grid control is public property now, so you can change properties on the user side, e.g a column width
+
+However note - because dependency properties arent set immediately - in case you need to **log in the constructor** of the parent, e.g. the window which contains the viewer, you would have to make sure all logging is taking place after the `OnApplyTemplate` finished - see the example:
+
+```
+public MainWindow()
+{
+    InitializeComponent();
+}
+
+public override void OnApplyTemplate()
+{
+    base.OnApplyTemplate();
+    DelayedConstructor();
+}
+
+void DelayedConstructor() { ... do stuff which requires logging ... }
+
+```
+
+
 
