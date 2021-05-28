@@ -7,7 +7,7 @@
              d:DesignHeight="230" d:DesignWidth="450"
              >
     <Grid>
-        <DataGrid x:Name="dg" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VirtualizingStackPanel.VirtualizationMode="Recycling" FontFamily="Letter Gothic" Background="Gainsboro">
+        <DataGrid x:Name="dg" x:FieldModifier="public" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" VirtualizingStackPanel.VirtualizationMode="Recycling" FontFamily="Letter Gothic" Background="Gainsboro">
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}" >
                     <Style.Triggers>
@@ -36,15 +36,21 @@
             </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="" Binding="{Binding TimeStamp,StringFormat=HH:mm:ss.fff, Mode=OneTime}" Width="80"/>
-                <DataGridTextColumn Header="" Binding="{Binding Level, Mode=OneTime}" Width="50"/>
+                <DataGridTextColumn Header="" Binding="{Binding Level, Mode=OneTime}" Width="45"/>
                 <DataGridTextColumn Header="" Binding="{Binding FormattedMessage, Mode=OneTime}" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="ToolTip" Value="{Binding Tooltip, Mode=OneWay}" />
+                            <Setter Property="ToolTip" Value="{Binding FormattedMessage, Mode=OneWay}" />
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="" Binding="{Binding Exception.Message, Mode=OneTime}" Width="100"/>
+                <DataGridTextColumn Header="" Binding="{Binding Exception.Message, Mode=OneTime}" Width="100">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip" Value="{Binding Exception, Mode=OneWay}" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

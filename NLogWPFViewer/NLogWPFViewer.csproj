@@ -81,7 +81,7 @@
     <Compile Include="NLogWPFViewer.xaml.cs">
       <DependentUpon>NLogWPFViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NLogViewerTarget.cs" />
+    <Compile Include="NLogWPFViewerTarget.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

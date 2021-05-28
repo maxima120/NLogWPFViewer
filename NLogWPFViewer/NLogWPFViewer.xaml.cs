@@ -21,8 +21,6 @@ namespace NLogWPFViewer
             return LogEntries.ToArray();
         }
 
-        public bool IsTargetConfigured { get; private set; }
-
         public int MaxCount
         {
             get { return (int)GetValue(MaxCountProperty); }
@@ -54,46 +52,43 @@ namespace NLogWPFViewer
         }
 
         public static readonly DependencyProperty TargetNameProperty =
-            DependencyProperty.Register("TargetName", typeof(string), typeof(NLogWPFViewer), new PropertyMetadata(null));
+            DependencyProperty.Register("TargetName", typeof(string), typeof(NLogWPFViewer), new PropertyMetadata(null, TargetNameChanged));
+
+        // NB: this wont fire if TragetName is not set by the control user, regardles of the default value,
+        //     so the cold run of SubscribeTarget in constructor is necessary to bind targets just in case the TargetName is never set
+        static void TargetNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var c = d as NLogWPFViewer;
+            var v = e.NewValue as string;
+            //Debug.WriteLine($"NLogWPFViewer (${c.GetHashCode()}) Target name changed: {v}");
+        
+            c.SubscribeTarget(v);
+        }
 
         public NLogWPFViewer()
         {
-            IsTargetConfigured = false;
             LogEntries = new ObservableCollection<LogEventInfo>();
 
             InitializeComponent();
 
+            // in case the dep prop is not set by its user
+            SubscribeTarget(null);
+
             dg.ItemsSource = LogEntries;
         }
 
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-
-            if (!IsTargetConfigured)
-            {
-                //Debug.WriteLine($">> OnApplyTemplate {TargetName}");
-                SubscribeTargets();
-            }
-        }
-
-        // NB: the property is not set at this time yet
-        //protected override void OnInitialized(EventArgs e)
-        //{
-        //    base.OnInitialized(e);
-        //    Debug.WriteLine($">> Initialized {TargetName}");
-        //}
-
-        void SubscribeTargets()
+        void SubscribeTarget(string name)
         {
             foreach (var target in LogManager.Configuration.AllTargets.OfType<NLogWPFViewerTarget>())
             {
-                if (!string.IsNullOrWhiteSpace(TargetName))
-                    if (!target.Name.StartsWith(TargetName))
-                        continue;
+                target.LogReceived -= LogReceived;
 
-                IsTargetConfigured = true;
-                target.LogReceived += LogReceived;
+                if (string.IsNullOrWhiteSpace(name) || target.Name.StartsWith(name))
+                {
+                    target.LogReceived += LogReceived;
+
+                    //Debug.WriteLine($"NLogWPFViewer (${this.GetHashCode()}) Target bound {target.Name}");
+                }
             }
         }
 
